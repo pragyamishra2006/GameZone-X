@@ -1,0 +1,4 @@
+const over =
+new Audio("../assets/sounds/gameover.mp3");
+
+over.play();

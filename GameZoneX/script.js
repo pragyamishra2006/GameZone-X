@@ -1,0 +1,1 @@
+function openGame(g){window.location.href='games/'+g+'.html';}

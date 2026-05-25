@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Runner Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Background Glow */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#22c55e22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:950px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:35px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* Score */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:220px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+}
+
+/* Canvas */
+
+canvas{
+
+    background:
+    linear-gradient(to top,
+    #1f2937 20%,
+    #4fc3f7 100%);
+
+    border-radius:25px;
+
+    border:4px solid #00bfff;
+
+    box-shadow:
+    0 0 25px #00bfff55;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Instructions */
+
+.instructions{
+
+    margin-top:20px;
+
+    color:white;
+
+    font-size:1.1rem;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    canvas{
+
+        width:100%;
+        height:auto;
+    }
+
+    h1{
+
+        font-size:3rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏃 Runner Game</h1>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Score</h2>
+
+<p id="score">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>High Score</h2>
+
+<p id="highScore">0</p>
+
+</div>
+
+</div>
+
+<canvas id="gameCanvas"
+width="850"
+height="420"></canvas>
+
+<div class="buttons">
+
+<button class="restart"
+onclick="restartGame()">
+
+🔄 Restart
+
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+<p class="instructions">
+⬆️ UP Arrow = Jump &nbsp;&nbsp;
+⬇️ DOWN Arrow = Slide
+</p>
+
+</div>
+
+<script>
+
+const canvas =
+document.getElementById("gameCanvas");
+
+const ctx =
+canvas.getContext("2d");
+
+/* SCORE */
+
+let score = 0;
+
+let highScore =
+localStorage.getItem("runnerHigh") || 0;
+
+document.getElementById(
+    "highScore"
+).innerText = highScore;
+
+/* PLAYER */
+
+const player = {
+
+    x:80,
+    y:300,
+    width:55,
+    height:80,
+
+    dy:0,
+
+    gravity:0.9,
+
+    jumpPower:-16,
+
+    grounded:true,
+
+    sliding:false
+};
+
+/* OBSTACLES */
+
+let obstacles = [];
+
+/* GAME */
+
+let speed = 6;
+
+let gameOver = false;
+
+/* CONTROLS */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        if(
+            e.key === "ArrowUp" &&
+            player.grounded
+        ){
+
+            player.dy =
+            player.jumpPower;
+
+            player.grounded = false;
+        }
+
+        if(
+            e.key === "ArrowDown"
+        ){
+
+            player.sliding = true;
+
+            player.height = 45;
+
+            player.y = 335;
+        }
+    }
+);
+
+document.addEventListener(
+    "keyup",
+    e=>{
+
+        if(
+            e.key === "ArrowDown"
+        ){
+
+            player.sliding = false;
+
+            player.height = 80;
+
+            player.y = 300;
+        }
+    }
+);
+
+/* CREATE OBSTACLES */
+
+function createObstacle(){
+
+    const type =
+    Math.random() > 0.5
+    ? "ground"
+    : "top";
+
+    if(type === "ground"){
+
+        obstacles.push({
+
+            x:canvas.width,
+
+            y:330,
+
+            width:40,
+
+            height:50,
+
+            type:"ground"
+        });
+
+    }else{
+
+        obstacles.push({
+
+            x:canvas.width,
+
+            y:250,
+
+            width:40,
+
+            height:130,
+
+            type:"top"
+        });
+    }
+}
+
+/* DRAW PLAYER */
+
+function drawPlayer(){
+
+    /* Glow */
+
+    ctx.shadowColor = "#00bfff";
+    ctx.shadowBlur = 20;
+
+    /* Body */
+
+    ctx.fillStyle = "#00bfff";
+
+    ctx.fillRect(
+        player.x + 10,
+        player.y,
+        35,
+        60
+    );
+
+    /* Head */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x + 27,
+        player.y - 12,
+        18,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "#ffd6a5";
+
+    ctx.fill();
+
+    /* Eyes */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        player.x + 22,
+        player.y - 15,
+        2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        player.x + 32,
+        player.y - 15,
+        2,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "black";
+
+    ctx.fill();
+
+    /* Legs */
+
+    ctx.strokeStyle = "#00bfff";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        player.x + 18,
+        player.y + 60
+    );
+
+    ctx.lineTo(
+        player.x + 12,
+        player.y + 80
+    );
+
+    ctx.moveTo(
+        player.x + 38,
+        player.y + 60
+    );
+
+    ctx.lineTo(
+        player.x + 44,
+        player.y + 80
+    );
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+}
+
+function drawGround(){
+
+    ctx.fillStyle = "#1f2937";
+
+    ctx.fillRect(
+        0,
+        380,
+        canvas.width,
+        40
+    );
+}
+
+/* DRAW OBSTACLES */
+
+function drawObstacles(){
+
+    obstacles.forEach(obstacle=>{
+
+        ctx.fillStyle = "#ef4444";
+
+        ctx.shadowColor = "#ef4444";
+
+        ctx.shadowBlur = 20;
+
+        ctx.fillRect(
+            obstacle.x,
+            obstacle.y,
+            obstacle.width,
+            obstacle.height
+        );
+
+        ctx.shadowBlur = 0;
+    });
+}
+
+/* UPDATE PLAYER */
+
+function updatePlayer(){
+
+    player.dy += player.gravity;
+
+    player.y += player.dy;
+
+    if(player.y >= 300 &&
+       !player.sliding){
+
+        player.y = 300;
+
+        player.dy = 0;
+
+        player.grounded = true;
+    }
+}
+
+/* UPDATE OBSTACLES */
+
+function updateObstacles(){
+
+    obstacles.forEach(obstacle=>{
+
+        obstacle.x -= speed;
+
+        /* COLLISION */
+
+        if(
+
+            player.x <
+            obstacle.x + obstacle.width &&
+
+            player.x + player.width >
+            obstacle.x &&
+
+            player.y <
+            obstacle.y + obstacle.height &&
+
+            player.y + player.height >
+            obstacle.y
+        ){
+
+            endGame();
+        }
+
+        /* SCORE */
+
+        if(
+            !obstacle.passed &&
+            obstacle.x < player.x
+        ){
+
+            obstacle.passed = true;
+
+            score++;
+
+            document.getElementById(
+                "score"
+            ).innerText = score;
+
+            if(score > highScore){
+
+                highScore = score;
+
+                localStorage.setItem(
+                    "runnerHigh",
+                    highScore
+                );
+
+                document.getElementById(
+                    "highScore"
+                ).innerText = highScore;
+            }
+        }
+    });
+
+    obstacles =
+    obstacles.filter(
+        obstacle =>
+        obstacle.x + obstacle.width > 0
+    );
+}
+
+/* GAME LOOP */
+
+function animate(){
+
+    if(gameOver)
+        return;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    drawGround();
+
+    drawPlayer();
+
+    drawObstacles();
+
+    updatePlayer();
+
+    updateObstacles();
+
+    requestAnimationFrame(
+        animate
+    );
+}
+
+/* SPAWN OBSTACLES */
+
+setInterval(()=>{
+
+    if(!gameOver){
+
+        createObstacle();
+    }
+
+},1600);
+
+/* END GAME */
+
+function endGame(){
+
+    gameOver = true;
+
+    ctx.fillStyle =
+    "rgba(0,0,0,0.6)";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "white";
+
+    ctx.font = "55px Arial";
+
+    ctx.fillText(
+        "GAME OVER",
+        240,
+        180
+    );
+
+    ctx.font = "35px Arial";
+
+    ctx.fillText(
+        "Score: " + score,
+        330,
+        250
+    );
+
+    ctx.fillText(
+        "High Score: " + highScore,
+        260,
+        310
+    );
+}
+
+/* RESTART */
+
+function restartGame(){
+
+    score = 0;
+
+    document.getElementById(
+        "score"
+    ).innerText = score;
+
+    obstacles = [];
+
+    gameOver = false;
+
+    player.y = 300;
+
+    player.dy = 0;
+
+    animate();
+}
+
+/* START */
+
+animate();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+const music =
+new Audio("../assets/sounds/bgmusic.mp3");
+
+music.loop = true;
+
+music.volume = 0.3;
+
+music.play();

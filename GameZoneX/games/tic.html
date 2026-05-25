@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Tic Tac Toe</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:
+linear-gradient(135deg,#020617,#0f172a,#111827);
+
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+color:white;
+overflow:hidden;
+
+}
+
+.game-container{
+
+width:90%;
+max-width:550px;
+
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.1);
+
+backdrop-filter:blur(12px);
+
+padding:35px;
+
+border-radius:30px;
+
+box-shadow:0 0 40px rgba(0,0,0,0.4);
+
+text-align:center;
+
+animation:fade 0.8s ease;
+
+}
+
+@keyframes fade{
+
+from{
+opacity:0;
+transform:translateY(30px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+h1{
+
+font-size:52px;
+
+margin-bottom:25px;
+
+color:#38bdf8;
+
+text-shadow:0 0 20px rgba(56,189,248,0.7);
+
+}
+
+/* TOP BAR */
+
+.top-bar{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:25px;
+
+gap:10px;
+
+}
+
+.top-bar button{
+
+flex:1;
+
+padding:14px;
+
+border:none;
+
+border-radius:15px;
+
+font-size:18px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:0.3s;
+
+color:white;
+
+}
+
+.home-btn{
+background:#f43f5e;
+}
+
+.restart-btn{
+background:#22c55e;
+}
+
+.top-bar button:hover{
+
+transform:scale(1.05);
+
+}
+
+/* SCORE BOX */
+
+.score-box{
+
+display:flex;
+
+justify-content:space-between;
+
+gap:15px;
+
+margin-bottom:25px;
+
+}
+
+.score-card{
+
+flex:1;
+
+background:rgba(255,255,255,0.08);
+
+padding:18px;
+
+border-radius:18px;
+
+box-shadow:0 0 15px rgba(255,255,255,0.05);
+
+}
+
+.score-card h3{
+
+font-size:18px;
+
+margin-bottom:10px;
+
+color:#cbd5e1;
+
+}
+
+.score-card p{
+
+font-size:30px;
+
+font-weight:bold;
+
+color:#38bdf8;
+
+}
+
+/* BOARD */
+
+.board{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:15px;
+
+margin-top:10px;
+
+}
+
+.cell{
+
+height:120px;
+
+background:#1e293b;
+
+border-radius:20px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-size:60px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:0.3s;
+
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+
+}
+
+.cell:hover{
+
+background:#334155;
+
+transform:scale(1.05);
+
+}
+
+/* STATUS */
+
+#status{
+
+margin-top:30px;
+
+font-size:30px;
+
+font-weight:600;
+
+min-height:40px;
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:600px){
+
+.game-container{
+
+padding:20px;
+
+}
+
+h1{
+
+font-size:40px;
+
+}
+
+.cell{
+
+height:90px;
+
+font-size:45px;
+
+}
+
+.score-card p{
+
+font-size:24px;
+
+}
+
+.top-bar{
+
+flex-direction:column;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="game-container">
+
+<h1>🤖 AI Tic Tac Toe</h1>
+
+<!-- BUTTONS -->
+
+<div class="top-bar">
+
+<button class="home-btn" onclick="goHome()">
+🏠 Home
+</button>
+
+<button class="restart-btn" onclick="restartGame()">
+🔄 Restart
+</button>
+
+</div>
+
+<!-- STREAKS -->
+
+<div class="score-box">
+
+<div class="score-card">
+<h3>🔥 Current Streak</h3>
+<p id="currentStreak">0</p>
+</div>
+
+<div class="score-card">
+<h3>🏆 Best Streak</h3>
+<p id="bestStreak">0</p>
+</div>
+
+</div>
+
+<!-- BOARD -->
+
+<div class="board" id="board"></div>
+
+<!-- STATUS -->
+
+<div id="status"></div>
+
+</div>
+
+<script>
+
+/* SOUND EFFECT */
+
+const clickSound =
+new Audio("../assets/sounds/click.mp3");
+
+/* ELEMENTS */
+
+const boardElement =
+document.getElementById("board");
+
+const statusText =
+document.getElementById("status");
+
+/* GAME DATA */
+
+let board =
+["","","","","","","","",""];
+
+let gameOver = false;
+
+/* STREAKS */
+
+let currentStreak = 0;
+
+let bestStreak =
+localStorage.getItem("bestStreak") || 0;
+
+document.getElementById("bestStreak").innerText =
+bestStreak;
+
+/* CREATE BOARD */
+
+function createBoard(){
+
+boardElement.innerHTML = "";
+
+board.forEach((cell,index)=>{
+
+const div =
+document.createElement("div");
+
+div.classList.add("cell");
+
+div.innerText = cell;
+
+div.addEventListener("click",
+()=>playerMove(index));
+
+boardElement.appendChild(div);
+
+});
+
+}
+
+/* PLAYER MOVE */
+
+function playerMove(index){
+
+if(board[index] !== "" || gameOver)
+return;
+
+clickSound.play();
+
+board[index] = "X";
+
+createBoard();
+
+/* PLAYER WIN */
+
+if(checkWinner(board,"X")){
+
+statusText.innerText =
+"🎉 You Win!";
+
+statusText.style.color = "#22c55e";
+
+currentStreak++;
+
+document.getElementById("currentStreak").innerText =
+currentStreak;
+
+if(currentStreak > bestStreak){
+
+bestStreak = currentStreak;
+
+localStorage.setItem("bestStreak",bestStreak);
+
+document.getElementById("bestStreak").innerText =
+bestStreak;
+
+}
+
+gameOver = true;
+
+return;
+
+}
+
+/* DRAW */
+
+if(isDraw()){
+
+statusText.innerText =
+"🤝 Draw!";
+
+statusText.style.color = "#facc15";
+
+currentStreak = 0;
+
+document.getElementById("currentStreak").innerText =
+0;
+
+gameOver = true;
+
+return;
+
+}
+
+setTimeout(aiMove,500);
+
+}
+
+/* AI MOVE */
+
+function aiMove(){
+
+let bestScore = -Infinity;
+
+let move;
+
+for(let i=0;i<9;i++){
+
+if(board[i] === ""){
+
+board[i] = "O";
+
+let score =
+minimax(board,0,false);
+
+board[i] = "";
+
+if(score > bestScore){
+
+bestScore = score;
+
+move = i;
+
+}
+
+}
+
+}
+
+board[move] = "O";
+
+createBoard();
+
+/* AI WIN */
+
+if(checkWinner(board,"O")){
+
+statusText.innerText =
+"🤖 AI Wins!";
+
+statusText.style.color = "#f43f5e";
+
+currentStreak = 0;
+
+document.getElementById("currentStreak").innerText =
+0;
+
+gameOver = true;
+
+return;
+
+}
+
+/* DRAW */
+
+if(isDraw()){
+
+statusText.innerText =
+"🤝 Draw!";
+
+statusText.style.color = "#facc15";
+
+currentStreak = 0;
+
+document.getElementById("currentStreak").innerText =
+0;
+
+gameOver = true;
+
+}
+
+}
+
+/* MINIMAX */
+
+function minimax(board,depth,isMaximizing){
+
+if(checkWinner(board,"O"))
+return 10 - depth;
+
+if(checkWinner(board,"X"))
+return depth - 10;
+
+if(isDrawBoard(board))
+return 0;
+
+if(isMaximizing){
+
+let bestScore = -Infinity;
+
+for(let i=0;i<9;i++){
+
+if(board[i] === ""){
+
+board[i] = "O";
+
+let score =
+minimax(board,depth+1,false);
+
+board[i] = "";
+
+bestScore =
+Math.max(score,bestScore);
+
+}
+
+}
+
+return bestScore;
+
+}else{
+
+let bestScore = Infinity;
+
+for(let i=0;i<9;i++){
+
+if(board[i] === ""){
+
+board[i] = "X";
+
+let score =
+minimax(board,depth+1,true);
+
+board[i] = "";
+
+bestScore =
+Math.min(score,bestScore);
+
+}
+
+}
+
+return bestScore;
+
+}
+
+}
+
+/* CHECK WINNER */
+
+function checkWinner(board,player){
+
+const patterns = [
+
+[0,1,2],
+[3,4,5],
+[6,7,8],
+[0,3,6],
+[1,4,7],
+[2,5,8],
+[0,4,8],
+[2,4,6]
+
+];
+
+return patterns.some(pattern=>{
+
+return pattern.every(index=>{
+
+return board[index] === player;
+
+});
+
+});
+
+}
+
+/* DRAW */
+
+function isDraw(){
+
+return board.every(cell=>cell !== "");
+
+}
+
+function isDrawBoard(board){
+
+return board.every(cell=>cell !== "");
+
+}
+
+/* RESTART */
+
+function restartGame(){
+
+board =
+["","","","","","","","",""];
+
+gameOver = false;
+
+statusText.innerText = "";
+
+createBoard();
+
+}
+
+/* HOME */
+
+function goHome(){
+
+window.location.href = "../index.html";
+
+}
+
+/* START */
+
+createBoard();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Memory Match Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Background Glow */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#ff4d6d22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:950px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:40px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* Stats */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:220px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+}
+
+/* Game Board */
+
+.game-board{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,140px);
+
+    gap:18px;
+
+    justify-content:center;
+
+    margin-top:20px;
+}
+
+/* Cards */
+
+.memory-card{
+
+    width:140px;
+
+    height:140px;
+
+    background:#091428;
+
+    border:3px solid #00bfff44;
+
+    border-radius:25px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    font-size:4rem;
+
+    box-shadow:
+    inset 0 0 15px #00bfff11,
+    0 0 15px #00bfff22;
+
+    user-select:none;
+}
+
+.memory-card:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:
+    0 0 25px #00bfff88,
+    inset 0 0 20px #00bfff33;
+}
+
+/* Flipped */
+
+.flipped{
+
+    background:#00bfff22;
+
+    border-color:#00bfff;
+}
+
+/* Matched */
+
+.matched{
+
+    background:#22c55e33;
+
+    border-color:#22c55e;
+
+    box-shadow:0 0 25px #22c55e88;
+}
+
+/* Message */
+
+.message{
+
+    margin-top:25px;
+
+    font-size:2rem;
+
+    color:#22c55e;
+
+    font-weight:bold;
+
+    min-height:40px;
+
+    text-shadow:0 0 10px #22c55e;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:35px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Responsive */
+
+@media(max-width:800px){
+
+    .game-board{
+
+        grid-template-columns:repeat(4,90px);
+    }
+
+    .memory-card{
+
+        width:90px;
+        height:90px;
+
+        font-size:2.5rem;
+    }
+
+    h1{
+
+        font-size:3rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧠 Memory Match</h1>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Moves</h2>
+
+<p id="moves">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>Best Score</h2>
+
+<p id="bestScore">0</p>
+
+</div>
+
+</div>
+
+<div class="game-board" id="gameBoard"></div>
+
+<div class="message" id="message"></div>
+
+<div class="buttons">
+
+<button class="restart" onclick="startGame()">
+🔄 Restart
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const board =
+document.getElementById("gameBoard");
+
+const movesText =
+document.getElementById("moves");
+
+const bestScoreText =
+document.getElementById("bestScore");
+
+const message =
+document.getElementById("message");
+
+const emojis = [
+
+"🍎","🍌","🍇","🍒",
+"🍎","🍌","🍇","🍒"
+
+];
+
+let cards = [];
+
+let flippedCards = [];
+
+let moves = 0;
+
+let matched = 0;
+
+let lockBoard = false;
+
+let bestScore =
+localStorage.getItem("memoryBest") || 0;
+
+bestScoreText.innerText = bestScore;
+
+function shuffle(array){
+
+    return array.sort(() =>
+    Math.random() - 0.5);
+}
+
+function startGame(){
+
+    board.innerHTML = "";
+
+    cards = shuffle([...emojis]);
+
+    flippedCards = [];
+
+    moves = 0;
+
+    matched = 0;
+
+    lockBoard = false;
+
+    message.innerText = "";
+
+    movesText.innerText = moves;
+
+    cards.forEach((emoji,index)=>{
+
+        const card =
+        document.createElement("div");
+
+        card.classList.add("memory-card");
+
+        card.dataset.emoji = emoji;
+
+        card.dataset.index = index;
+
+        card.innerHTML = "❓";
+
+        card.addEventListener(
+            "click",
+            flipCard
+        );
+
+        board.appendChild(card);
+    });
+}
+
+function flipCard(){
+
+    if(
+        lockBoard ||
+        this.classList.contains("flipped") ||
+        this.classList.contains("matched")
+    ) return;
+
+    this.innerHTML = this.dataset.emoji;
+
+    this.classList.add("flipped");
+
+    flippedCards.push(this);
+
+    if(flippedCards.length === 2){
+
+        moves++;
+
+        movesText.innerText = moves;
+
+        checkMatch();
+    }
+}
+
+function checkMatch(){
+
+    const [card1,card2] = flippedCards;
+
+    if(card1.dataset.emoji ===
+       card2.dataset.emoji){
+
+        card1.classList.add("matched");
+
+        card2.classList.add("matched");
+
+        matched += 2;
+
+        flippedCards = [];
+
+        if(matched === emojis.length){
+
+            message.innerText =
+            "🎉 You Won!";
+
+            if(bestScore === 0 ||
+               moves < bestScore){
+
+                bestScore = moves;
+
+                localStorage.setItem(
+                    "memoryBest",
+                    bestScore
+                );
+
+                bestScoreText.innerText =
+                bestScore;
+            }
+        }
+
+    }else{
+
+        lockBoard = true;
+
+        setTimeout(()=>{
+
+            card1.innerHTML = "❓";
+            card2.innerHTML = "❓";
+
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+
+            flippedCards = [];
+
+            lockBoard = false;
+
+        },800);
+    }
+}
+
+startGame();
+
+</script>
+
+</body>
+
+</html>

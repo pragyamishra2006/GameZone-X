@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Player Profile</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:
+linear-gradient(135deg,#020617,#0f172a,#111827);
+
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+padding:20px;
+
+color:white;
+
+}
+
+/* PROFILE CARD */
+
+.profile-card{
+
+width:100%;
+max-width:600px;
+
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.1);
+
+backdrop-filter:blur(14px);
+
+padding:40px;
+
+border-radius:30px;
+
+box-shadow:0 0 40px rgba(0,0,0,0.4);
+
+animation:fade 0.8s ease;
+
+}
+
+/* ANIMATION */
+
+@keyframes fade{
+
+from{
+opacity:0;
+transform:translateY(30px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+/* TOP */
+
+.top{
+
+display:flex;
+
+align-items:center;
+
+gap:25px;
+
+margin-bottom:35px;
+
+}
+
+.avatar{
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+
+background:#38bdf8;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+font-size:55px;
+
+font-weight:bold;
+
+box-shadow:0 0 25px rgba(56,189,248,0.6);
+
+}
+
+.info h1{
+
+font-size:42px;
+
+color:#38bdf8;
+
+margin-bottom:8px;
+
+}
+
+.info p{
+
+font-size:18px;
+
+color:#cbd5e1;
+
+}
+
+/* STATS */
+
+.stats{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:20px;
+
+margin-top:25px;
+
+}
+
+.stat{
+
+background:rgba(255,255,255,0.08);
+
+padding:25px;
+
+border-radius:22px;
+
+text-align:center;
+
+transition:0.3s;
+
+}
+
+.stat:hover{
+
+transform:scale(1.03);
+
+background:rgba(255,255,255,0.12);
+
+}
+
+.stat h2{
+
+font-size:20px;
+
+margin-bottom:15px;
+
+color:#cbd5e1;
+
+}
+
+.stat p{
+
+font-size:34px;
+
+font-weight:bold;
+
+color:#38bdf8;
+
+}
+
+/* ACHIEVEMENTS */
+
+.achievements{
+
+margin-top:40px;
+
+}
+
+.achievements h2{
+
+margin-bottom:20px;
+
+font-size:34px;
+
+color:#facc15;
+
+}
+
+.badges{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:15px;
+
+}
+
+.badge{
+
+padding:14px 22px;
+
+background:#1e293b;
+
+border-radius:16px;
+
+font-size:18px;
+
+transition:0.3s;
+
+}
+
+.badge:hover{
+
+transform:scale(1.05);
+
+background:#334155;
+
+}
+
+/* BUTTONS */
+
+.buttons{
+
+margin-top:40px;
+
+display:flex;
+
+gap:15px;
+
+}
+
+button{
+
+flex:1;
+
+padding:16px;
+
+border:none;
+
+border-radius:16px;
+
+font-size:20px;
+
+font-weight:600;
+
+cursor:pointer;
+
+transition:0.3s;
+
+color:white;
+
+}
+
+.home-btn{
+background:#f43f5e;
+}
+
+.logout-btn{
+background:#22c55e;
+}
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+.top{
+
+flex-direction:column;
+
+text-align:center;
+
+}
+
+.stats{
+
+grid-template-columns:1fr;
+
+}
+
+.buttons{
+
+flex-direction:column;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="profile-card">
+
+<!-- TOP -->
+
+<div class="top">
+
+<div class="avatar" id="avatar">
+P
+</div>
+
+<div class="info">
+
+<h1 id="username">
+Pragya
+</h1>
+
+<p id="email">
+example@gmail.com
+</p>
+
+</div>
+
+</div>
+
+<!-- STATS -->
+
+<div class="stats">
+
+<div class="stat">
+
+<h2>🏆 Total Score</h2>
+
+<p id="score">
+0
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>🎮 Games Played</h2>
+
+<p id="games">
+0
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>🔥 Highest Streak</h2>
+
+<p id="streak">
+0
+</p>
+
+</div>
+
+<div class="stat">
+
+<h2>⭐ Rank</h2>
+
+<p>
+Pro
+</p>
+
+</div>
+
+</div>
+
+<!-- ACHIEVEMENTS -->
+
+<div class="achievements">
+
+<h2>🏅 Achievements</h2>
+
+<div class="badges">
+
+<div class="badge">
+🐍 Snake Master
+</div>
+
+<div class="badge">
+⚡ Fast Clicker
+</div>
+
+<div class="badge">
+🧠 Memory Pro
+</div>
+
+<div class="badge">
+➗ Math Genius
+</div>
+
+<div class="badge">
+🏆 Top Gamer
+</div>
+
+</div>
+
+</div>
+
+<!-- BUTTONS -->
+
+<div class="buttons">
+
+<button class="home-btn"
+onclick="goHome()">
+🏠 Home
+</button>
+
+<button class="logout-btn"
+onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* LOAD DATA */
+
+let username =
+localStorage.getItem("username") || "Player";
+
+let email =
+localStorage.getItem("email") || "example@gmail.com";
+
+let totalScore =
+localStorage.getItem("totalScore") || 0;
+
+let gamesPlayed =
+localStorage.getItem("gamesPlayed") || 0;
+
+let highestStreak =
+localStorage.getItem("highestStreak") || 0;
+
+/* DISPLAY */
+
+document.getElementById("username").innerText =
+username;
+
+document.getElementById("email").innerText =
+email;
+
+document.getElementById("score").innerText =
+totalScore;
+
+document.getElementById("games").innerText =
+gamesPlayed;
+
+document.getElementById("streak").innerText =
+highestStreak;
+
+document.getElementById("avatar").innerText =
+username.charAt(0).toUpperCase();
+
+/* HOME */
+
+function goHome(){
+
+window.location.href =
+"index.html";
+
+}
+
+/* LOGOUT */
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href =
+"login.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

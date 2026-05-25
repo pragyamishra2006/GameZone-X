@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Reaction Test</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Background Glow */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#22c55e22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:900px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:40px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* Stats */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:220px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    color:white;
+}
+
+/* Reaction Area */
+
+.reaction-box{
+
+    width:100%;
+
+    height:320px;
+
+    border-radius:30px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    user-select:none;
+
+    transition:0.3s;
+
+    background:#ef4444;
+
+    color:white;
+
+    box-shadow:
+    0 0 25px #ef444488;
+}
+
+.waiting{
+
+    background:#ef4444;
+}
+
+.ready{
+
+    background:#22c55e;
+
+    box-shadow:
+    0 0 40px #22c55e;
+}
+
+/* Message */
+
+.message{
+
+    margin-top:25px;
+
+    font-size:2rem;
+
+    min-height:40px;
+
+    font-weight:bold;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:35px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Responsive */
+
+@media(max-width:700px){
+
+    h1{
+
+        font-size:3rem;
+    }
+
+    .reaction-box{
+
+        height:250px;
+
+        font-size:1.5rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⚡ Reaction Test</h1>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Last Time</h2>
+
+<p id="time">0 ms</p>
+
+</div>
+
+<div class="card">
+
+<h2>Best Time</h2>
+
+<p id="bestTime">0 ms</p>
+
+</div>
+
+</div>
+
+<div class="reaction-box waiting"
+id="reactionBox">
+
+Wait For Green...
+
+</div>
+
+<div class="message"
+id="message">
+
+Click Start To Begin 🚀
+
+</div>
+
+<div class="buttons">
+
+<button class="restart"
+onclick="startGame()">
+
+▶ Start
+
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const reactionBox =
+document.getElementById("reactionBox");
+
+const timeText =
+document.getElementById("time");
+
+const bestTimeText =
+document.getElementById("bestTime");
+
+const message =
+document.getElementById("message");
+
+let startTime;
+
+let timeout;
+
+let gameStarted = false;
+
+let ready = false;
+
+let bestTime =
+localStorage.getItem(
+    "reactionBest"
+) || 0;
+
+bestTimeText.innerText =
+bestTime + " ms";
+
+/* START GAME */
+
+function startGame(){
+
+    clearTimeout(timeout);
+
+    ready = false;
+
+    gameStarted = true;
+
+    reactionBox.classList.remove("ready");
+
+    reactionBox.classList.add("waiting");
+
+    reactionBox.innerText =
+    "Wait For Green...";
+
+    message.innerText =
+    "";
+
+    const randomDelay =
+    Math.floor(
+        Math.random() * 4000
+    ) + 2000;
+
+    timeout = setTimeout(()=>{
+
+        ready = true;
+
+        reactionBox.classList.remove(
+            "waiting"
+        );
+
+        reactionBox.classList.add(
+            "ready"
+        );
+
+        reactionBox.innerText =
+        "CLICK NOW!";
+
+        startTime = Date.now();
+
+    },randomDelay);
+}
+
+/* CLICK EVENT */
+
+reactionBox.addEventListener(
+    "click",
+    ()=>{
+
+        if(!gameStarted)
+            return;
+
+        /* Clicked Too Early */
+
+        if(!ready){
+
+            clearTimeout(timeout);
+
+            reactionBox.innerText =
+            "Too Early 😭";
+
+            message.innerText =
+            "Wait For Green Color";
+
+            message.style.color =
+            "#ef4444";
+
+            return;
+        }
+
+        /* Correct Reaction */
+
+        const reactionTime =
+        Date.now() - startTime;
+
+        timeText.innerText =
+        reactionTime + " ms";
+
+        message.innerText =
+        "🔥 Amazing Reflexes!";
+
+        message.style.color =
+        "#22c55e";
+
+        reactionBox.innerText =
+        "Click Start Again";
+
+        reactionBox.classList.remove(
+            "ready"
+        );
+
+        reactionBox.classList.add(
+            "waiting"
+        );
+
+        ready = false;
+
+        if(
+
+            bestTime == 0 ||
+
+            reactionTime < bestTime
+        ){
+
+            bestTime = reactionTime;
+
+            localStorage.setItem(
+                "reactionBest",
+                bestTime
+            );
+
+            bestTimeText.innerText =
+            bestTime + " ms";
+        }
+    }
+);
+
+</script>
+
+</body>
+
+</html>

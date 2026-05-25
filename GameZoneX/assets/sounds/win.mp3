@@ -1,0 +1,4 @@
+const win =
+new Audio("../assets/sounds/win.mp3");
+
+win.play();

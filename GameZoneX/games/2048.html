@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>2048 Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Glow Background */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#ffb70322;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:850px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:35px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* Stats */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:200px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    color:white;
+}
+
+/* Grid */
+
+.grid{
+
+    width:420px;
+    height:420px;
+
+    margin:auto;
+
+    background:#1f2937;
+
+    border-radius:25px;
+
+    padding:15px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:12px;
+
+    box-shadow:
+    inset 0 0 25px #00000066,
+    0 0 25px #00bfff33;
+}
+
+/* Tiles */
+
+.tile{
+
+    width:85px;
+    height:85px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    color:white;
+
+    transition:0.15s;
+
+    box-shadow:
+    0 0 15px #00000033;
+}
+
+/* Tile Colors */
+
+.tile[data-value="0"]{
+    background:#374151;
+    color:transparent;
+}
+
+.tile[data-value="2"]{
+    background:#00bfff;
+}
+
+.tile[data-value="4"]{
+    background:#22c55e;
+}
+
+.tile[data-value="8"]{
+    background:#f59e0b;
+}
+
+.tile[data-value="16"]{
+    background:#ef4444;
+}
+
+.tile[data-value="32"]{
+    background:#ec4899;
+}
+
+.tile[data-value="64"]{
+    background:#8b5cf6;
+}
+
+.tile[data-value="128"]{
+    background:#eab308;
+}
+
+.tile[data-value="256"]{
+    background:#14b8a6;
+}
+
+.tile[data-value="512"]{
+    background:#f97316;
+}
+
+.tile[data-value="1024"]{
+    background:#ff00ff;
+}
+
+.tile[data-value="2048"]{
+
+    background:#ffffff;
+
+    color:black;
+
+    box-shadow:
+    0 0 30px white,
+    0 0 60px white;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:35px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Message */
+
+.message{
+
+    margin-top:25px;
+
+    font-size:2rem;
+
+    color:#22c55e;
+
+    font-weight:bold;
+
+    min-height:40px;
+
+    text-shadow:0 0 10px #22c55e;
+}
+
+/* Responsive */
+
+@media(max-width:700px){
+
+    .grid{
+
+        width:320px;
+        height:320px;
+    }
+
+    .tile{
+
+        width:62px;
+        height:62px;
+
+        font-size:1.5rem;
+    }
+
+    h1{
+
+        font-size:3rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔢 2048</h1>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Score</h2>
+
+<p id="score">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>Best Score</h2>
+
+<p id="bestScore">0</p>
+
+</div>
+
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="message" id="message"></div>
+
+<div class="buttons">
+
+<button class="restart"
+onclick="startGame()">
+
+🔄 Restart
+
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const grid =
+document.getElementById("grid");
+
+const scoreText =
+document.getElementById("score");
+
+const bestScoreText =
+document.getElementById("bestScore");
+
+const message =
+document.getElementById("message");
+
+let board = [];
+
+let score = 0;
+
+let bestScore =
+localStorage.getItem("2048Best") || 0;
+
+bestScoreText.innerText = bestScore;
+
+/* START GAME */
+
+function startGame(){
+
+    board = [
+
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0],
+        [0,0,0,0]
+
+    ];
+
+    score = 0;
+
+    message.innerText = "";
+
+    scoreText.innerText = score;
+
+    addNumber();
+    addNumber();
+
+    renderBoard();
+}
+
+/* ADD NUMBER */
+
+function addNumber(){
+
+    let empty = [];
+
+    for(let r=0;r<4;r++){
+
+        for(let c=0;c<4;c++){
+
+            if(board[r][c] === 0){
+
+                empty.push({r,c});
+            }
+        }
+    }
+
+    if(empty.length === 0)
+        return;
+
+    let spot =
+    empty[Math.floor(
+        Math.random()*empty.length
+    )];
+
+    board[spot.r][spot.c] =
+    Math.random() < 0.9 ? 2 : 4;
+}
+
+/* RENDER */
+
+function renderBoard(){
+
+    grid.innerHTML = "";
+
+    board.flat().forEach(num=>{
+
+        const tile =
+        document.createElement("div");
+
+        tile.classList.add("tile");
+
+        tile.dataset.value = num;
+
+        tile.innerText =
+        num === 0 ? "" : num;
+
+        grid.appendChild(tile);
+    });
+}
+
+/* SLIDE */
+
+function slide(row){
+
+    row = row.filter(val => val);
+
+    for(let i=0;i<row.length-1;i++){
+
+        if(row[i] === row[i+1]){
+
+            row[i] *= 2;
+
+            score += row[i];
+
+            row[i+1] = 0;
+
+            if(row[i] === 2048){
+
+                message.innerText =
+                "🎉 YOU WON!";
+            }
+        }
+    }
+
+    row = row.filter(val => val);
+
+    while(row.length < 4){
+
+        row.push(0);
+    }
+
+    return row;
+}
+
+/* MOVE LEFT */
+
+function moveLeft(){
+
+    for(let r=0;r<4;r++){
+
+        board[r] = slide(board[r]);
+    }
+}
+
+/* MOVE RIGHT */
+
+function moveRight(){
+
+    for(let r=0;r<4;r++){
+
+        board[r].reverse();
+
+        board[r] =
+        slide(board[r]);
+
+        board[r].reverse();
+    }
+}
+
+/* MOVE UP */
+
+function moveUp(){
+
+    for(let c=0;c<4;c++){
+
+        let col = [];
+
+        for(let r=0;r<4;r++){
+
+            col.push(board[r][c]);
+        }
+
+        col = slide(col);
+
+        for(let r=0;r<4;r++){
+
+            board[r][c] = col[r];
+        }
+    }
+}
+
+/* MOVE DOWN */
+
+function moveDown(){
+
+    for(let c=0;c<4;c++){
+
+        let col = [];
+
+        for(let r=0;r<4;r++){
+
+            col.push(board[r][c]);
+        }
+
+        col.reverse();
+
+        col = slide(col);
+
+        col.reverse();
+
+        for(let r=0;r<4;r++){
+
+            board[r][c] = col[r];
+        }
+    }
+}
+
+/* KEYBOARD */
+
+document.addEventListener(
+    "keydown",
+    e=>{
+
+        let oldBoard =
+        JSON.stringify(board);
+
+        if(e.key === "ArrowLeft")
+            moveLeft();
+
+        if(e.key === "ArrowRight")
+            moveRight();
+
+        if(e.key === "ArrowUp")
+            moveUp();
+
+        if(e.key === "ArrowDown")
+            moveDown();
+
+        if(
+            oldBoard !==
+            JSON.stringify(board)
+        ){
+
+            addNumber();
+
+            renderBoard();
+
+            scoreText.innerText =
+            score;
+
+            if(score > bestScore){
+
+                bestScore = score;
+
+                localStorage.setItem(
+                    "2048Best",
+                    bestScore
+                );
+
+                bestScoreText.innerText =
+                bestScore;
+            }
+        }
+    }
+);
+
+/* START */
+
+startGame();
+
+</script>
+
+</body>
+
+</html>

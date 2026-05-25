@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Leaderboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:
+linear-gradient(135deg,#020617,#0f172a,#111827);
+
+min-height:100vh;
+
+padding:40px;
+
+color:white;
+
+}
+
+/* HEADER */
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:40px;
+
+}
+
+h1{
+
+font-size:55px;
+
+color:#38bdf8;
+
+text-shadow:0 0 20px rgba(56,189,248,0.6);
+
+}
+
+button{
+
+padding:14px 24px;
+
+border:none;
+
+border-radius:14px;
+
+font-size:18px;
+
+font-weight:600;
+
+cursor:pointer;
+
+background:#f43f5e;
+
+color:white;
+
+transition:0.3s;
+
+}
+
+button:hover{
+
+transform:scale(1.05);
+
+}
+
+/* BOARD */
+
+.board{
+
+max-width:850px;
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column;
+
+gap:18px;
+
+}
+
+/* PLAYER CARD */
+
+.player{
+
+background:rgba(255,255,255,0.08);
+
+border:1px solid rgba(255,255,255,0.1);
+
+backdrop-filter:blur(10px);
+
+padding:22px 28px;
+
+border-radius:22px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+transition:0.3s;
+
+box-shadow:0 0 15px rgba(0,0,0,0.3);
+
+}
+
+.player:hover{
+
+transform:scale(1.02);
+
+background:rgba(255,255,255,0.12);
+
+}
+
+.left{
+
+display:flex;
+
+align-items:center;
+
+gap:18px;
+
+}
+
+.rank{
+
+font-size:28px;
+
+font-weight:bold;
+
+color:#facc15;
+
+}
+
+.avatar{
+
+width:60px;
+height:60px;
+
+border-radius:50%;
+
+background:#38bdf8;
+
+display:flex;
+
+justify-content:center;
+align-items:center;
+
+font-size:28px;
+
+font-weight:bold;
+
+}
+
+.name{
+
+font-size:24px;
+
+font-weight:600;
+
+}
+
+.score{
+
+font-size:26px;
+
+font-weight:bold;
+
+color:#38bdf8;
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:700px){
+
+.player{
+
+flex-direction:column;
+
+gap:15px;
+
+align-items:flex-start;
+
+}
+
+h1{
+
+font-size:40px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>🏆 Leaderboard</h1>
+
+<button onclick="goHome()">
+🏠 Home
+</button>
+
+</div>
+
+<div class="board" id="board"></div>
+
+<script>
+
+let players = [
+
+{
+name:localStorage.getItem("username"),
+score:Number(localStorage.getItem("totalScore")) || 0
+},
+
+{name:"Alex",score:5200},
+{name:"Sam",score:4300},
+{name:"Riya",score:3900},
+{name:"Karan",score:3400},
+{name:"Aman",score:3000}
+
+];
+
+players.sort((a,b)=>b.score-a.score);
+
+const board =
+document.getElementById("board");
+
+players.forEach((player,index)=>{
+
+board.innerHTML += `
+
+<div class="player">
+
+<div class="left">
+
+<div class="rank">
+#${index+1}
+</div>
+
+<div class="avatar">
+${player.name.charAt(0)}
+</div>
+
+<div class="name">
+${player.name}
+</div>
+
+</div>
+
+<div class="score">
+🏆 ${player.score}
+</div>
+
+</div>
+
+`;
+
+});
+
+function goHome(){
+
+window.location.href = "index.html";
+
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GameZone-X</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  background: linear-gradient(135deg,#020617,#0f172a,#111827);
+  color:white;
+  min-height:100vh;
+}
+
+/* LOGIN CHECK */
+.hidden{ display:none; }
+
+/* NAVBAR */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 60px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+/* LOGO */
+.logo{
+  font-size:42px;
+  font-weight:800;
+  color:#38bdf8;
+  letter-spacing:1px;
+}
+
+/* NAV RIGHT */
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+
+/* BUTTONS (INCREASED SIZE) */
+.nav-btn{
+  padding:16px 26px;
+  border:none;
+  border-radius:16px;
+  font-size:18px;
+  font-weight:700;
+  cursor:pointer;
+  background:#1e293b;
+  color:white;
+  transition:0.3s;
+  letter-spacing:0.5px;
+}
+
+.nav-btn:hover{
+  transform:scale(1.08);
+  background:#334155;
+}
+
+/* PROFILE (INCREASED SIZE) */
+.profile{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(255,255,255,0.10);
+  padding:14px 22px;
+  border-radius:18px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.profile:hover{
+  transform:scale(1.06);
+  background:rgba(255,255,255,0.16);
+}
+
+/* AVATAR (BIGGER) */
+.avatar{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#38bdf8;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:24px;
+  font-weight:bold;
+}
+
+/* HERO */
+.hero{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.hero h1{
+  font-size:72px;
+  margin-bottom:20px;
+  color:#38bdf8;
+  text-shadow:0 0 25px rgba(56,189,248,0.7);
+}
+
+.hero p{
+  font-size:24px;
+  color:#cbd5e1;
+}
+
+/* SECTION */
+section{
+  padding:45px 60px;
+}
+
+section h2{
+  font-size:44px;
+  margin-bottom:30px;
+  color:#38bdf8;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:30px;
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  padding:35px;
+  border-radius:28px;
+  transition:0.4s;
+  cursor:pointer;
+  box-shadow:0 0 20px rgba(0,0,0,0.3);
+}
+
+.card:hover{
+  transform:translateY(-10px) scale(1.03);
+  background:rgba(255,255,255,0.12);
+}
+
+/* EMOJI */
+.emoji{
+  font-size:75px;
+  margin-bottom:20px;
+}
+
+/* TITLE */
+.card h3{
+  font-size:32px;
+  margin-bottom:15px;
+}
+
+/* DESCRIPTION */
+.card p{
+  font-size:18px;
+  color:#cbd5e1;
+  line-height:1.6;
+  margin-bottom:25px;
+}
+
+/* PLAY BUTTON */
+.play-btn{
+  display:inline-block;
+  padding:16px 28px;
+  font-size:20px;
+  font-weight:600;
+  border-radius:16px;
+  background:linear-gradient(45deg,#06b6d4,#3b82f6);
+  color:white;
+  transition:0.3s;
+}
+
+.card:hover .play-btn{
+  transform:scale(1.08);
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:40px;
+  color:#94a3b8;
+  font-size:18px;
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .navbar{
+    flex-direction:column;
+    gap:20px;
+    padding:20px;
+  }
+
+  .hero h1{
+    font-size:50px;
+  }
+
+  section{
+    padding:30px 20px;
+  }
+
+  section h2{
+    font-size:34px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN CHECK -->
+<script>
+if(!localStorage.getItem("username")){
+  window.location.href = "login.html";
+}
+</script>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+  <div class="logo">🎮 GameZone-X</div>
+
+  <div class="nav-right">
+
+    <button class="nav-btn" onclick="openLeaderboard()">
+      🏆 Leaderboard
+    </button>
+
+    <div class="profile" onclick="openProfile()">
+      <div class="avatar" id="avatar">P</div>
+      <span id="playerName">Player</span>
+    </div>
+
+    <button class="nav-btn" onclick="logout()">
+      🚪 Logout
+    </button>
+
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Welcome to GameZone-X</h1>
+  <p>Play. Compete. Break Records.</p>
+</div>
+
+<!-- CLASSIC -->
+<section>
+<h2>Classic Games</h2>
+
+<div class="grid">
+
+<div class="card" onclick="openGame('snake')">
+  <div class="emoji">🐍</div>
+  <h3>Snake Game</h3>
+  <p>Use arrow keys to eat food and grow bigger.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('tic')">
+  <div class="emoji">⭕</div>
+  <h3>Tic Tac Toe</h3>
+  <p>Challenge AI and test your strategy.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('memory')">
+  <div class="emoji">🧠</div>
+  <h3>Memory Game</h3>
+  <p>Match cards and improve memory power.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+</div>
+</section>
+
+<!-- ADVENTURE -->
+<section>
+<h2>Adventure Games</h2>
+
+<div class="grid">
+
+<div class="card" onclick="openGame('runner')">
+  <div class="emoji">🏃</div>
+  <h3>Runner Game</h3>
+  <p>Jump obstacles and survive longer.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('flappy')">
+  <div class="emoji">🐦</div>
+  <h3>Flappy Bird</h3>
+  <p>Avoid pipes and fly endlessly.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('breakout')">
+  <div class="emoji">🧱</div>
+  <h3>Breakout</h3>
+  <p>Break all bricks using the paddle.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+</div>
+</section>
+
+<!-- PUZZLE -->
+<section>
+<h2>Puzzle Games</h2>
+
+<div class="grid">
+
+<div class="card" onclick="openGame('2048')">
+  <div class="emoji">🔢</div>
+  <h3>2048</h3>
+  <p>Merge blocks and reach 2048.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('math')">
+  <div class="emoji">➗</div>
+  <h3>Math Quiz</h3>
+  <p>Solve quickly and improve streaks.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+<div class="card" onclick="openGame('reaction')">
+  <div class="emoji">⚡</div>
+  <h3>Reaction Test</h3>
+  <p>Measure your reflex speed.</p>
+  <div class="play-btn">▶ Play Now</div>
+</div>
+
+</div>
+</section>
+
+<footer>
+© 2026 GameZone-X | Built with ❤️
+</footer>
+
+<script>
+
+let username = localStorage.getItem("username") || "Player";
+
+document.getElementById("playerName").innerText = username;
+document.getElementById("avatar").innerText = username.charAt(0).toUpperCase();
+
+function openProfile(){
+  window.location.href = "profile.html";
+}
+
+function openLeaderboard(){
+  window.location.href = "leaderboard.html";
+}
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+function openGame(game){
+  window.location.href = "games/" + game + ".html";
+}
+
+</script>
+
+</body>
+</html>

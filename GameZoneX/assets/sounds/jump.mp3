@@ -1,0 +1,4 @@
+const jump =
+new Audio("../assets/sounds/jump.mp3");
+
+jump.play();

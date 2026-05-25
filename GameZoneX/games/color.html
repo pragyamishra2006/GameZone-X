@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Color Guess Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Glow Background */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#ff00ff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:950px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:35px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* RGB Display */
+
+.rgb-box{
+
+    background:#0f1f3d;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    margin-bottom:25px;
+
+    border:2px solid #00bfff33;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.rgb-box h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+#rgbValue{
+
+    font-size:2.2rem;
+
+    font-weight:bold;
+
+    color:white;
+}
+
+/* Stats */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:30px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:200px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    color:white;
+}
+
+/* Color Grid */
+
+.colors{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:25px;
+
+    margin-top:25px;
+}
+
+.color-btn{
+
+    height:150px;
+
+    border:none;
+
+    border-radius:25px;
+
+    cursor:pointer;
+
+    transition:0.25s;
+
+    box-shadow:
+    0 0 25px #00000044;
+}
+
+.color-btn:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:
+    0 0 35px white;
+}
+
+/* Message */
+
+.message{
+
+    margin-top:25px;
+
+    font-size:2rem;
+
+    font-weight:bold;
+
+    min-height:40px;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:35px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Responsive */
+
+@media(max-width:700px){
+
+    .colors{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    h1{
+
+        font-size:3rem;
+    }
+
+    #rgbValue{
+
+        font-size:1.5rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎨 Color Guess</h1>
+
+<div class="rgb-box">
+
+<h2>Guess This Color</h2>
+
+<p id="rgbValue">
+RGB(255,0,0)
+</p>
+
+</div>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Score</h2>
+
+<p id="score">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>High Score</h2>
+
+<p id="highScore">0</p>
+
+</div>
+
+</div>
+
+<div class="colors" id="colors"></div>
+
+<div class="message"
+id="message">
+
+</div>
+
+<div class="buttons">
+
+<button class="restart"
+onclick="startGame()">
+
+🔄 Restart
+
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const colorsContainer =
+document.getElementById("colors");
+
+const rgbValue =
+document.getElementById("rgbValue");
+
+const message =
+document.getElementById("message");
+
+const scoreText =
+document.getElementById("score");
+
+const highScoreText =
+document.getElementById("highScore");
+
+let score = 0;
+
+let highScore =
+localStorage.getItem(
+    "colorGuessHigh"
+) || 0;
+
+highScoreText.innerText =
+highScore;
+
+let correctColor;
+
+/* RANDOM COLOR */
+
+function randomColor(){
+
+    const r =
+    Math.floor(Math.random()*256);
+
+    const g =
+    Math.floor(Math.random()*256);
+
+    const b =
+    Math.floor(Math.random()*256);
+
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+/* START GAME */
+
+function startGame(){
+
+    colorsContainer.innerHTML = "";
+
+    message.innerText = "";
+
+    let colors = [];
+
+    for(let i=0;i<6;i++){
+
+        colors.push(randomColor());
+    }
+
+    correctColor =
+    colors[
+        Math.floor(Math.random()*6)
+    ];
+
+    rgbValue.innerText =
+    correctColor.toUpperCase();
+
+    colors.forEach(color=>{
+
+        const btn =
+        document.createElement("button");
+
+        btn.classList.add("color-btn");
+
+        btn.style.background = color;
+
+        btn.addEventListener(
+            "click",
+            ()=>checkAnswer(color)
+        );
+
+        colorsContainer.appendChild(btn);
+    });
+}
+
+/* CHECK ANSWER */
+
+function checkAnswer(color){
+
+    if(color === correctColor){
+
+        message.innerText =
+        "🎉 Correct!";
+
+        message.style.color =
+        "#22c55e";
+
+        score++;
+
+        scoreText.innerText = score;
+
+        if(score > highScore){
+
+            highScore = score;
+
+            localStorage.setItem(
+                "colorGuessHigh",
+                highScore
+            );
+
+            highScoreText.innerText =
+            highScore;
+        }
+
+        setTimeout(()=>{
+            startGame();
+        },1000);
+
+    }else{
+
+        message.innerText =
+        "❌ Wrong Color";
+
+        message.style.color =
+        "#ef4444";
+
+        score = 0;
+
+        scoreText.innerText = score;
+    }
+}
+
+/* START */
+
+startGame();
+
+</script>
+
+</body>
+
+</html>

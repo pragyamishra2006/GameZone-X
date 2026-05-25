@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Breakout Game</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:
+    linear-gradient(135deg,#081221,#0f3460);
+
+    overflow:hidden;
+}
+
+/* Background Glow */
+
+body::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:500px;
+    height:500px;
+
+    background:#00bfff22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:450px;
+    height:450px;
+
+    background:#ff4d6d22;
+
+    border-radius:50%;
+
+    filter:blur(120px);
+
+    bottom:-120px;
+    right:-120px;
+}
+
+/* Main Container */
+
+.container{
+
+    position:relative;
+
+    z-index:10;
+
+    width:95%;
+    max-width:950px;
+
+    background:#111827ee;
+
+    border:2px solid #00bfff33;
+
+    border-radius:35px;
+
+    padding:35px;
+
+    text-align:center;
+
+    backdrop-filter:blur(12px);
+
+    box-shadow:
+    0 0 40px #00bfff33,
+    0 0 70px #00bfff22;
+}
+
+/* Heading */
+
+h1{
+
+    font-size:4rem;
+
+    margin-bottom:20px;
+
+    color:#00bfff;
+
+    text-shadow:
+    0 0 15px #00bfff,
+    0 0 40px #00bfff;
+}
+
+/* Stats */
+
+.stats{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+}
+
+.card{
+
+    background:#0f1f3d;
+
+    padding:18px 30px;
+
+    border-radius:20px;
+
+    border:2px solid #00bfff33;
+
+    min-width:220px;
+
+    box-shadow:0 0 20px #00bfff22;
+}
+
+.card h2{
+
+    color:#00bfff;
+
+    margin-bottom:10px;
+}
+
+.card p{
+
+    font-size:2rem;
+
+    font-weight:bold;
+}
+
+/* Canvas */
+
+canvas{
+
+    background:#050b18;
+
+    border-radius:25px;
+
+    border:4px solid #00bfff;
+
+    box-shadow:
+    0 0 25px #00bfff55;
+}
+
+/* Buttons */
+
+.buttons{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    flex-wrap:wrap;
+}
+
+button{
+
+    padding:18px 45px;
+
+    border:none;
+
+    border-radius:40px;
+
+    font-size:1.2rem;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+/* Restart */
+
+.restart{
+
+    background:#22c55e;
+
+    color:white;
+
+    box-shadow:0 0 20px #22c55e88;
+}
+
+.restart:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #22c55e;
+}
+
+/* Home */
+
+.home{
+
+    background:#00bfff;
+
+    color:white;
+
+    box-shadow:0 0 20px #00bfff88;
+}
+
+.home:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:0 0 35px #00bfff;
+}
+
+/* Instructions */
+
+.instructions{
+
+    margin-top:20px;
+
+    color:white;
+
+    font-size:1.1rem;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    canvas{
+
+        width:100%;
+        height:auto;
+    }
+
+    h1{
+
+        font-size:3rem;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🧱 Breakout</h1>
+
+<div class="stats">
+
+<div class="card">
+
+<h2>Score</h2>
+
+<p id="score">0</p>
+
+</div>
+
+<div class="card">
+
+<h2>High Score</h2>
+
+<p id="highScore">0</p>
+
+</div>
+
+</div>
+
+<canvas id="gameCanvas"
+width="800"
+height="500"></canvas>
+
+<div class="buttons">
+
+<button class="restart"
+onclick="restartGame()">
+
+🔄 Restart
+
+</button>
+
+<button class="home"
+onclick="window.location.href='../index.html'">
+
+🏠 Home
+
+</button>
+
+</div>
+
+<p class="instructions">
+Move Mouse To Control Paddle 🎮
+</p>
+
+</div>
+
+<script>
+
+const canvas =
+document.getElementById("gameCanvas");
+
+const ctx =
+canvas.getContext("2d");
+
+/* SCORE */
+
+let score = 0;
+
+let highScore =
+localStorage.getItem("breakoutHigh") || 0;
+
+document.getElementById(
+    "highScore"
+).innerText = highScore;
+
+/* BALL */
+
+let ballX = canvas.width / 2;
+
+let ballY = canvas.height - 40;
+
+let dx = 3;
+
+let dy = -3;
+
+let ballRadius = 12;
+
+/* PADDLE */
+
+const paddleHeight = 16;
+
+const paddleWidth = 140;
+
+let paddleX =
+(canvas.width - paddleWidth) / 2;
+
+/* BRICKS */
+
+const brickRowCount = 5;
+
+const brickColumnCount = 8;
+
+const brickWidth = 85;
+
+const brickHeight = 28;
+
+const brickPadding = 15;
+
+const brickOffsetTop = 40;
+
+const brickOffsetLeft = 30;
+
+let bricks = [];
+
+for(let c=0;c<brickColumnCount;c++){
+
+    bricks[c] = [];
+
+    for(let r=0;r<brickRowCount;r++){
+
+        bricks[c][r] = {
+
+            x:0,
+            y:0,
+            status:1
+        };
+    }
+}
+
+/* MOUSE CONTROL */
+
+document.addEventListener(
+    "mousemove",
+    movePaddle
+);
+
+function movePaddle(e){
+
+    const rect =
+    canvas.getBoundingClientRect();
+
+    const relativeX =
+    e.clientX - rect.left;
+
+    paddleX =
+    relativeX - paddleWidth/2;
+
+    if(paddleX < 0)
+        paddleX = 0;
+
+    if(
+        paddleX + paddleWidth >
+        canvas.width
+    ){
+
+        paddleX =
+        canvas.width - paddleWidth;
+    }
+}
+
+/* DRAW BALL */
+
+function drawBall(){
+
+    ctx.beginPath();
+
+    ctx.arc(
+        ballX,
+        ballY,
+        ballRadius,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fillStyle = "#00bfff";
+
+    ctx.shadowColor = "#00bfff";
+
+    ctx.shadowBlur = 25;
+
+    ctx.fill();
+
+    ctx.closePath();
+
+    ctx.shadowBlur = 0;
+}
+
+/* DRAW PADDLE */
+
+function drawPaddle(){
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        paddleX,
+        canvas.height-paddleHeight-10,
+        paddleWidth,
+        paddleHeight,
+        20
+    );
+
+    ctx.fillStyle = "#22c55e";
+
+    ctx.shadowColor = "#22c55e";
+
+    ctx.shadowBlur = 20;
+
+    ctx.fill();
+
+    ctx.closePath();
+
+    ctx.shadowBlur = 0;
+}
+
+/* DRAW BRICKS */
+
+function drawBricks(){
+
+    for(let c=0;c<brickColumnCount;c++){
+
+        for(let r=0;r<brickRowCount;r++){
+
+            if(bricks[c][r].status === 1){
+
+                const brickX =
+                c*(brickWidth+brickPadding)
+                + brickOffsetLeft;
+
+                const brickY =
+                r*(brickHeight+brickPadding)
+                + brickOffsetTop;
+
+                bricks[c][r].x =
+                brickX;
+
+                bricks[c][r].y =
+                brickY;
+
+                ctx.beginPath();
+
+                ctx.roundRect(
+                    brickX,
+                    brickY,
+                    brickWidth,
+                    brickHeight,
+                    10
+                );
+
+                ctx.fillStyle =
+                `hsl(${c*40},80%,60%)`;
+
+                ctx.shadowBlur = 15;
+
+                ctx.shadowColor =
+                `hsl(${c*40},80%,60%)`;
+
+                ctx.fill();
+
+                ctx.closePath();
+
+                ctx.shadowBlur = 0;
+            }
+        }
+    }
+}
+
+/* COLLISION */
+
+function collisionDetection(){
+
+    for(let c=0;c<brickColumnCount;c++){
+
+        for(let r=0;r<brickRowCount;r++){
+
+            const b = bricks[c][r];
+
+            if(b.status === 1){
+
+                if(
+
+                    ballX > b.x &&
+                    ballX < b.x + brickWidth &&
+
+                    ballY > b.y &&
+                    ballY < b.y + brickHeight
+                ){
+
+                    dy = -dy;
+
+                    b.status = 0;
+
+                    score++;
+
+                    document.getElementById(
+                        "score"
+                    ).innerText = score;
+
+                    if(score > highScore){
+
+                        highScore = score;
+
+                        localStorage.setItem(
+                            "breakoutHigh",
+                            highScore
+                        );
+
+                        document.getElementById(
+                            "highScore"
+                        ).innerText =
+                        highScore;
+                    }
+
+                    /* WIN */
+
+                    if(
+                        score ===
+                        brickRowCount *
+                        brickColumnCount
+                    ){
+
+                        alert(
+                        "🎉 YOU WON!"
+                        );
+
+                        restartGame();
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* DRAW */
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    drawBricks();
+
+    drawBall();
+
+    drawPaddle();
+
+    collisionDetection();
+
+    /* WALL COLLISION */
+
+    if(
+        ballX + dx >
+        canvas.width - ballRadius ||
+
+        ballX + dx < ballRadius
+    ){
+
+        dx = -dx;
+    }
+
+    if(ballY + dy < ballRadius){
+
+        dy = -dy;
+    }
+
+    else if(
+
+        ballY + dy >
+        canvas.height - ballRadius - 20
+    ){
+
+        if(
+
+            ballX > paddleX &&
+            ballX < paddleX + paddleWidth
+        ){
+
+            dy = -dy;
+
+        }else{
+
+            alert("💀 GAME OVER");
+
+            restartGame();
+
+            return;
+        }
+    }
+
+    ballX += dx;
+
+    ballY += dy;
+
+    requestAnimationFrame(draw);
+}
+
+/* RESTART */
+
+function restartGame(){
+
+    score = 0;
+
+    document.getElementById(
+        "score"
+    ).innerText = score;
+
+    ballX = canvas.width/2;
+
+    ballY = canvas.height-40;
+
+    dx = 3;
+
+    dy = -3;
+
+    for(let c=0;c<brickColumnCount;c++){
+
+        for(let r=0;r<brickRowCount;r++){
+
+            bricks[c][r].status = 1;
+        }
+    }
+}
+
+/* START */
+
+draw();
+
+</script>
+
+</body>
+
+</html>
