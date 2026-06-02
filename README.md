@@ -120,6 +120,4 @@ If you like this project:
 🍴 Fork it
 📢 Share with friends
 🚀 Use it as your portfolio project
-📌 Note
-
-This project is built for learning and portfolio purposes. It can be extended into a full-scale gaming platform with backend integration and multiplayer features.
+📌 Note: This project is built for learning and portfolio purposes. It can be extended into a full-scale gaming platform with backend integration and multiplayer features.
