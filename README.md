@@ -1,6 +1,6 @@
 # 🎮 GameZone-X
 
-GameZone-X is a modern multi-game web platform built using HTML, CSS, and JavaScript. It provides a clean gaming dashboard where users can log in, explore games, track scores, and enjoy a smooth UI experience.
+GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript and MongoDB. It provides a clean gaming dashboard where users can log in, explore games, track scores, and enjoy a smooth UI experience.
 
 ---
 
