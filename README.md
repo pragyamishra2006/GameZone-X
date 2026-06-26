@@ -18,14 +18,14 @@ GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript
 
 ## ✨ Features
 
-- 🔐 Simple login system using localStorage
-- 👤 User profile with initials avatar
-- 🏆 Leaderboard page for tracking scores
-- 🎮 Multiple mini-games in one platform
-- 🎯 Clean and modern gaming dashboard UI
-- 📱 Fully responsive design
-- 🌙 Dark-themed aesthetic UI
-- ⚡ Smooth animations and hover effects
+- 🔐 Simple login system using localStorage.
+- 👤 User profile with initials avatar.
+- 🏆 Leaderboard page for tracking scores.
+- 🎮 Multiple mini-games in one platform.
+- 🎯 Clean and modern gaming dashboard UI.
+- 📱 Fully responsive design.
+- 🌙 Dark-themed aesthetic UI.
+- ⚡ Smooth animations and hover effects.
 
 ---
 
