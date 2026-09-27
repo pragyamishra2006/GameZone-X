@@ -83,30 +83,6 @@ GameZone-X/
 
 ---
 
-## 🚀 How to Run Locally
-
-1. Clone this repository
-```bash
-git clone https://github.com/your-username/GameZone-X.git
-Open the project folder
-Run index.html in your browser
-Login with your name
-Start playing 🎮
-🔐 Login System
-Uses browser localStorage
-Stores username locally
-No backend required
-Automatically redirects to dashboard after login
-🎯 Future Improvements
-🔥 Firebase backend integration
-🌍 Global leaderboard system
-🎵 Sound effects and game music
-🧑‍🤝‍🧑 Multiplayer game modes
-📊 Score analytics dashboard
-🌗 Light/Dark mode toggle
-🏆 Real-time competitive leaderboard
-👨‍💻 Developer
-
 ## Author:
 Pragya Mishra
 Btech CSE
