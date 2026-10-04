@@ -1,22 +1,21 @@
-# 🎮 GameZone-X
+# 🎮 GameZone-X:
 
 GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript and MongoDB. It provides a clean gaming dashboard where users can log in, explore games, track scores, and enjoy a smooth UI experience.
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live Demo:
 
 👉 https://pragyamishra2006.github.io/GameZone-X/
 
 ---
 
-## 📸 Preview
-
+## 📸 Preview:
 ![GameZone-X Screenshot](c:\Users\DELL\AppData\Local\Packages\MicrosoftWindows.Client.Core_cw5n1h2txyewy\TempState\ScreenClip\{34FE00AD-7388-4DE1-86FD-62777AA9388C}.png)
 
 ---
 
-## ✨ Features
+## ✨ Features:
 
 - 🔐 Simple login system using localStorage.
 - 👤 User profile with initials avatar.
@@ -29,7 +28,7 @@ GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript
 
 ---
 
-## 🎮 Games Included
+## 🎮 Games Included:
 
 ### Classic Games
 - 🐍 Snake Game – Grow the snake by eating food
@@ -48,7 +47,7 @@ GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack:
 
 - HTML5
 - CSS3 (Glassmorphism UI)
@@ -57,7 +56,7 @@ GameZone-X is a modern multi-game web platform built using HTML, CSS, JavaScript
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure:
 
 GameZone-X/
 │
@@ -86,3 +85,4 @@ GameZone-X/
 ## Author:
 Pragya Mishra
 Btech CSE
+
